@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
 
 	// Scan file for tokens 
 	int numTokens = 0; 
-	Scanner file(input, 1); 
+	Scanner file(input); 
 	static list<Token> tokens; 
 
 	// Print tokens to the terminal 

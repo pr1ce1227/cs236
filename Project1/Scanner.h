@@ -16,7 +16,14 @@ private:
     
 
 public:
-	Scanner(const string& input, int lineCount) : input(input), lineCount(lineCount) { }
+	Scanner(const string& input) : input(input) {
+        if (input.empty()) {
+            lineCount = 1; 
+        }
+        else {
+            lineCount = 1; 
+        }
+    }
 
     // Compares input to matching keyword, returns true or false, verify is keyword and check is current input
     bool checkKeyWord(string check, string verify) {
