@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include "Parser.h"
+#include "Parameter.h"
 #include "Token.h"
 #include "Scanner.h"
 #include <vector>
@@ -23,8 +24,10 @@ int main(int argc, char* argv[]) {
 	Scanner file(input);
 
 	// Print tokens to the terminal 
-	Parser tokens = file.scanToken();
-	tokens.parse(); 
+	Parser program = file.scanToken();
+	program.parse(); 
+
+	program.print(); 
 
 }
 

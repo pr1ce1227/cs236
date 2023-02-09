@@ -1,7 +1,6 @@
 #pragma once
 #include <iostream>
 #include <string>
-#include <fstream>
 #include <sstream>
 using namespace std; 
 
@@ -30,6 +29,10 @@ public:
 
 	TokenType getType() const{
 		return type; 
+	}
+
+	string getValue() {
+		return value; 
 	}
 
 	// Set the type name as a string for printing purpouses 

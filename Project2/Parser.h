@@ -1,15 +1,23 @@
 #pragma once
 #include "Token.h"
+#include "Predicate.h"
+#include "Rule.h"
+#include "Parameter.h"
+#include "DatalogProgram.h"
 #include <vector>
 
 class Parser {
 
 private:
+	DatalogProgram Dp; 
 	vector<Token> tokens;
 
 public:
 	Parser(const vector<Token>& tokens) : tokens(tokens) { }
 
+	DatalogProgram getDP() {
+		return Dp; 
+	}
 
 	void advanceToken() {
 		tokens.erase(tokens.begin());
@@ -22,25 +30,30 @@ public:
 			scheme(); 
 			schemeList(); 
 		}
-		else if (tokenType() == FACTS) {
+
+		if (tokenType() == FACTS) {
 			match(FACTS); 
 			match(COLON); 
 			factList(); 
 		}
-		else if (tokenType() == RULES) {
+
+		if (tokenType() == RULES) {
 			match(RULES); 
 			match(COLON); 
 			ruleList();
 		}
-		else if (tokenType() == QUERIES) {
+
+		if (tokenType() == QUERIES) {
 			match(QUERIES); 
 			match(COLON); 
 			query(); 
 			queryList(); 
 		}
-		else if (tokenType() == eof) {
+
+		if (tokenType() == eof) {
 			// lambda
 		}
+
 		else {
 			throw tokens.at(0);
 		}
@@ -48,12 +61,16 @@ public:
 
 	void fact() {
 		if (tokenType() == ID) {
+			Predicate Pre(tokens.at(0).getValue());
 			match(ID); 
-			match(LEFT_PAREN); 
+			match(LEFT_PAREN);
+			Parameter Par(tokens.at(0).getValue());
+			Pre.addParam(Par);
 			match(STRING); 
-			stringList(); 
+			stringList(Pre); 
 			match(RIGHT_PAREN); 
 			match(PERIOD); 
+			Dp.addFact(Pre);
 		}
 		else {
 			throw tokens.at(0);
@@ -61,7 +78,7 @@ public:
 	}
 
 	void factList() {
-		if (tokenType() == FACTS) {
+		if (tokenType() == ID) {
 			fact(); 
 			factList(); 
 		}
@@ -70,24 +87,30 @@ public:
 		}
 	}
 
-	void headPredicit() {
+	void headPredicit(Rule& rul) {
 		if (tokenType() == ID) {
+			Predicate Pre(tokens.at(0).getValue());
 			match(ID); 
 			match(LEFT_PAREN); 
+			Parameter Par(tokens.at(0).getValue());
+			Pre.addParam(Par);
 			parameter(); 
-			parameterList(); 
-			match(RIGHT_PAREN); 
+			parameterList(Pre); 
+			match(RIGHT_PAREN);
+			rul.setHead(Pre); 
 		}
 		else {
 			throw tokens.at(0);
 		}
 	}
 
-	void idList() {
+	void idList(Predicate& pre) {
 		if (tokenType() == COMMA) {
 			match(COMMA);
+			Parameter Par(tokens.at(0).getValue());
+			pre.addParam(Par); 
 			match(ID);
-			idList();
+			idList(pre);
 		}
 		else {
 			// lambda
@@ -120,11 +143,13 @@ public:
 		}
 	}
 
-	void parameterList() {
+	void parameterList(Predicate& pre) {
 		if (tokenType() == COMMA) {
-			match(COMMA); 
+			match(COMMA);
+			Parameter Par(tokens.at(0).getValue());
+			pre.addParam(Par);
 			parameter(); 
-			parameterList(); 
+			parameterList(pre); 
 		}
 		else {
 			//lambda
@@ -133,26 +158,59 @@ public:
 
 	void predicit() {
 		if (tokenType() == ID) {
+			Predicate Pre(tokens.at(0).getValue());
 			match(ID); 
 			match(LEFT_PAREN);
+			Parameter Par(tokens.at(0).getValue());
+			Pre.addParam(Par);
 			parameter(); 
-			parameterList(); 
+			parameterList(Pre); 
 			match(RIGHT_PAREN); 
+			Dp.addQuerie(Pre);
 		}
 		else {
 			throw tokens.at(0);
 		}
 	}
 
-	void predicitList() {
+	void predicitBody(Rule& rul) {
+		if (tokenType() == ID) {
+			Predicate Pre(tokens.at(0).getValue());
+			match(ID);
+			match(LEFT_PAREN);
+			Parameter Par(tokens.at(0).getValue());
+			Pre.addParam(Par);
+			parameter();
+			parameterList(Pre);
+			match(RIGHT_PAREN);
+			rul.addBodyPredicate(Pre); 
+		}
+		else {
+			throw tokens.at(0);
+		}
+	}
+
+	void predicitList(Rule& rul) {
 		if (tokenType() == COMMA) {
 			match(COMMA); 
-			predicit(); 
-			predicitList(); 
+			predicitBody(rul); 
+			predicitList(rul); 
 		}
 		else {
 			// lambda
 		}
+	}
+
+	void print() {
+		cout << "Success!" << endl;
+		cout << Dp.toStringSchemes();
+		cout << endl; 
+		cout << Dp.toStringFacts(); 
+		cout << endl; 
+		cout << Dp.toStringRules(); 
+		cout << endl; 
+		cout << Dp.toStringQueries(); 
+	 
 	}
 
 	void query() {
@@ -172,15 +230,18 @@ public:
 	}
 
 	void rule() {
-		headPredicit(); 
+		Rule rul; 
+		headPredicit(rul); 
 		match(COLON_DASH); 
-		predicit(); 
-		predicitList(); 
+		Predicate Pre; 
+		predicitBody(rul); 
+		predicitList(rul); 
 		match(PERIOD); 
+		Dp.addRule(rul); 
 	}
 
 	void ruleList() {
-		if (tokenType() == RULES) {
+		if (tokenType() == ID) {
 			rule(); 
 			ruleList(); 
 		}
@@ -191,18 +252,22 @@ public:
 
 	void scheme() {
 		if (tokenType() == ID) {
+			Predicate Pre(tokens.at(0).getValue());
 			match(ID);
 			match(LEFT_PAREN);
+			Parameter Par(tokens.at(0).getValue());
+			Pre.addParam(Par); 
 			match(ID);
-			idList();
+			idList(Pre);
 			match(RIGHT_PAREN);
+			Dp.addScheme(Pre); 
 		}
 		else
 			throw tokens.at(0);
 	}
 
 	void schemeList() {
-		if (tokenType() == SCHEMES) {
+		if (tokenType() == ID) {
 			scheme(); 
 			schemeList(); 
 		}
@@ -211,11 +276,13 @@ public:
 		}
 	}
 
-	void stringList() {
+	void stringList(Predicate& pre) {
 		if ((tokenType() == COMMA)) {
 			match(COMMA);
+			Parameter Par(tokens.at(0).getValue());
+			pre.addParam(Par);
 			match(STRING); 
-			stringList(); 
+			stringList(pre); 
 		}
 		else {
 			// lambda
