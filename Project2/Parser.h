@@ -25,35 +25,50 @@ public:
 
 	void dataProgram() {
 		if (tokenType() == SCHEMES) {
-			match(SCHEMES); 
-			match(COLON); 
-			scheme(); 
-			schemeList(); 
+			match(SCHEMES);
+			match(COLON);
+			scheme();
+			schemeList();
 		}
+		else {
+			throw tokens.at(0);
+		}
+
+
 
 		if (tokenType() == FACTS) {
-			match(FACTS); 
-			match(COLON); 
-			factList(); 
+			match(FACTS);
+			match(COLON);
+			factList();
 		}
+		else {
+			throw tokens.at(0);
+		}
+
 
 		if (tokenType() == RULES) {
-			match(RULES); 
-			match(COLON); 
+			match(RULES);
+			match(COLON);
 			ruleList();
 		}
+		else {
+			throw tokens.at(0);
+		}
+
 
 		if (tokenType() == QUERIES) {
-			match(QUERIES); 
-			match(COLON); 
-			query(); 
-			queryList(); 
+			match(QUERIES);
+			match(COLON);
+			query();
+			queryList();
+		}
+		else {
+			throw tokens.at(0);
 		}
 
 		if (tokenType() == eof) {
 			// lambda
 		}
-
 		else {
 			throw tokens.at(0);
 		}
@@ -65,6 +80,7 @@ public:
 			match(ID); 
 			match(LEFT_PAREN);
 			Parameter Par(tokens.at(0).getValue());
+			Dp.addDomain(Par); 
 			Pre.addParam(Par);
 			match(STRING); 
 			stringList(Pre); 
@@ -127,10 +143,11 @@ public:
 	void parse() {
 		try {
 			dataProgram();
+			print(); 
 		}
 		catch (Token errorToken) {
 			cout << "Failure!" << endl; 
-			cout << "  " << errorToken.toString();
+			cout << "  " << errorToken.toString() << endl;
 		}
 	}
 
@@ -204,12 +221,10 @@ public:
 	void print() {
 		cout << "Success!" << endl;
 		cout << Dp.toStringSchemes();
-		cout << endl; 
 		cout << Dp.toStringFacts(); 
-		cout << endl; 
 		cout << Dp.toStringRules(); 
-		cout << endl; 
-		cout << Dp.toStringQueries(); 
+		cout << Dp.toStringQueries();
+		cout << Dp.toStringDomains(); 
 	 
 	}
 
@@ -219,7 +234,7 @@ public:
 	}
 
 	void queryList() {
-		if (tokenType() == QUERIES) {
+		if (tokenType() == ID) {
 			query();
 			queryList();
 		}
@@ -280,6 +295,7 @@ public:
 		if ((tokenType() == COMMA)) {
 			match(COMMA);
 			Parameter Par(tokens.at(0).getValue());
+			Dp.addDomain(Par); 
 			pre.addParam(Par);
 			match(STRING); 
 			stringList(pre); 

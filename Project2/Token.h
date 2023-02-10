@@ -6,7 +6,7 @@ using namespace std;
 
 // Used for identifying tokens 
 enum TokenType {
-	COMMA, PERIOD, Q_MARK, LEFT_PAREN, RIGHT_PAREN, COLON, COLON_DASH, MULTIPLY, ADD, SCHEMES, FACTS, RULES, QUERIES, ID, STRING, COMMENT, UNDEFINED, eof
+	COMMA, PERIOD, Q_MARK, LEFT_PAREN, RIGHT_PAREN, COLON, COLON_DASH, MULTIPLY, ADD, SCHEMES, FACTS, RULES, QUERIES, ID, STRING, COMMENT, UNDEFINED, eof, START
 };
 
 class Token {
@@ -17,7 +17,11 @@ private:
 	
 public:
 	// Default constructor, with constructor we want
-	Token(){}
+	Token() {
+		line = 0; 
+		value = ""; 
+		type = START; 
+	}
 	Token(TokenType type,string value,int line) : type(type), value(value), line(line) { }
 
 	// Turn token into a string for printing 

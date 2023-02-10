@@ -20,14 +20,11 @@ int main(int argc, char* argv[]) {
 	in.close();
 
 	// Scan file for tokens 
-	int numTokens = 0;
 	Scanner file(input);
 
 	// Print tokens to the terminal 
 	Parser program = file.scanToken();
 	program.parse(); 
-
-	program.print(); 
 
 }
 

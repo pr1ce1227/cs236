@@ -33,8 +33,8 @@ public:
 
 	string toString() {
 		stringstream out; 
-		out << "  " << headPredicate.toString() << " :- ";
-		for (int i = 0; i < bodyPredicate.size(); ++i) {
+		out << headPredicate.toString() << " :- ";
+		for (long unsigned int i = 0; i < bodyPredicate.size(); ++i) {
 			out << bodyPredicate.at(i).toString(); 
 			if (i < bodyPredicate.size() - 1) {
 				out << ','; 

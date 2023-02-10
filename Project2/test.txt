@@ -1,27 +1,22 @@
 
 
-# small test with no syntax errors
+# error, can't have rules before facts
 
 
 Schemes:
 
-  sister(x,y)
-  parent(x,y)
-  aunt(x,y)
-
-Facts:
-
-  sister('Ann', 'Bob').
-  parent('Bob', 'Jay').
+  a(x)
 
 Rules:
 
-  aunt(x,z) :- sister(x,y), parent(y,z).
+  a(x) :- b(x).
+
+Facts:
+
+  a('A').
 
 Queries:
 
-  aunt('Ann', 'Jay')?
-
-
+  a('A')?
 
 
