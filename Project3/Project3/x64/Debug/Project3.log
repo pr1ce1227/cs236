@@ -1,0 +1,7 @@
+﻿  main.cpp
+C:\Cs 236\Project3\Project3\DatalogProgram.h(98,1): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\Cs 236\Project3\Project3\DatalogProgram.h(102,1): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\Cs 236\Project3\Project3\DatalogProgram.h(106,1): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\Cs 236\Project3\Project3\Scanner.h(70,1): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\Cs 236\Project3\Project3\Relation.h(39,1): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  Project3.vcxproj -> C:\Cs 236\Project3\x64\Debug\Project3.exe

@@ -1,0 +1,3 @@
+﻿  main.cpp
+C:\Cs 236\LoveLetter\LoveLetter\main.cpp(109,55): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+  LoveLetter.vcxproj -> C:\Cs 236\LoveLetter\x64\Debug\LoveLetter.exe
